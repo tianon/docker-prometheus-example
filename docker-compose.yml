@@ -1,0 +1,53 @@
+version: '2'
+
+services:
+
+    grafana:
+        image: tianon/grafana
+        container_name: grafana
+        hostname: grafana
+        restart: always
+        environment:
+            GF_USERS_ALLOW_SIGN_UP: 'false'
+        #ports:
+        #    - 3000:3000
+
+    prom:
+        image: tianon/prometheus
+        container_name: prom
+        hostname: prom
+        restart: always
+        volumes:
+            - ./prometheus.yml:/opt/prometheus/prometheus.yml:ro
+
+    node-exporter:
+        image: tianon/prometheus:node-exporter
+        container_name: prom-node-exporter
+        hostname: node-exporter
+        restart: always
+        volumes:
+            - /:/rootfs:ro
+        # https://github.com/prometheus/node_exporter/issues/66#issuecomment-197300231
+        command: [
+            'node_exporter',
+            '-collector.procfs', '/rootfs/proc',
+            '-collector.sysfs', '/rootfs/sys',
+            '-collector.filesystem.ignored-mount-points', '^/((rootfs/)?(sys|proc|dev|var/lib/nfs|var/lib/docker|run/docker)|host|etc|opt/node-exporter/data)($$|/)|^/$$|/\.gvfs$$',
+        ]
+
+    cadvisor:
+        image: google/cadvisor
+        container_name: prom-cadvisor
+        hostname: cadvisor
+        restart: always
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /sys:/sys:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+
+networks:
+    default:
+        driver: bridge
+        driver_opts:
+            com.docker.network.bridge.name: br-prometheus
