@@ -22,7 +22,8 @@ services:
             - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
     node-exporter:
-        image: tianon/prometheus:node-exporter
+        # https://github.com/prometheus/node_exporter/releases
+        image: prom/node-exporter:v0.14.0
         container_name: prom-node-exporter
         hostname: node-exporter
         restart: always
@@ -30,7 +31,6 @@ services:
             - /:/rootfs:ro
         # https://github.com/prometheus/node_exporter/issues/66#issuecomment-197300231
         command: [
-            'node_exporter',
             '-collector.procfs', '/rootfs/proc',
             '-collector.sysfs', '/rootfs/sys',
             '-collector.filesystem.ignored-mount-points', '^/((rootfs/)?(sys|proc|dev|var/lib/nfs|var/lib/docker|run/docker)|host|etc|opt/node-exporter/data)($$|/)|^/$$|/\.gvfs$$',
