@@ -37,7 +37,9 @@ services:
         ]
 
     cadvisor:
-        image: google/cadvisor
+        # https://github.com/google/cadvisor/releases
+        image: google/cadvisor:v0.24.1
+        # https://github.com/google/cadvisor/issues/1556 (v0.25.0 is no good)
         container_name: prom-cadvisor
         hostname: cadvisor
         restart: always
