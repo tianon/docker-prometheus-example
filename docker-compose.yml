@@ -13,12 +13,13 @@ services:
         #    - 3000:3000
 
     prom:
-        image: tianon/prometheus
+        # https://github.com/prometheus/prometheus/releases
+        image: prom/prometheus:v1.6.1
         container_name: prom
         hostname: prom
         restart: always
         volumes:
-            - ./prometheus.yml:/opt/prometheus/prometheus.yml:ro
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
     node-exporter:
         image: tianon/prometheus:node-exporter
