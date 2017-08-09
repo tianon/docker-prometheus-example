@@ -20,6 +20,15 @@ services:
         restart: always
         volumes:
             - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+        mem_limit: 150m
+        command: [
+            '-config.file=/etc/prometheus/prometheus.yml',
+            '-storage.local.path=/prometheus',
+            '-web.console.libraries=/usr/share/prometheus/console_libraries',
+            '-web.console.templates=/usr/share/prometheus/consoles',
+            # As a rule of thumb, you should have at least 50% headroom in physical memory over the configured heap size. 
+            '-storage.local.target-heap-size=100000000',
+        ]
 
     node-exporter:
         # https://github.com/prometheus/node_exporter/releases
